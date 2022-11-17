@@ -8,9 +8,9 @@ https://swet.dena.com/entry/2021/07/12/120000 を参照してください。
 # Usage
 
 ```yaml
-- uses: jksy/checkout-with-reference@v1
+- uses: aiming/checkout-with-reference-action@v1
   with:
-    # https://github.com/jksy/checkout-with-reference.git の **jksy/checkout-with-reference** の部分です。
+    # https://github.com/aiming/checkout-with-reference-action.git の **aiming/checkout-with-reference-action** の部分です。
     # Default: ${{ github.repository }}
     github_repository: ''
 
@@ -49,7 +49,7 @@ https://swet.dena.com/entry/2021/07/12/120000 を参照してください。
 リファレンスリポジトリ( `/mnt/shared_dir_like_as_nfs/repository.git` に存在する)付きで、カレントディレクトリにcheckoutします
 
 ```yaml
-- uses: jksy/checkout-with-reference@v1
+- uses: aiming/checkout-with-reference-action@v1
   with:
     reference_dir: '/mnt/shared_dir_like_as_nfs/repository.git'
     checkout_dir: .
@@ -58,7 +58,7 @@ https://swet.dena.com/entry/2021/07/12/120000 を参照してください。
 プライベートリポジトリをcheckoutします
 
 ```yaml
-- uses: jksy/checkout-with-reference@v1
+- uses: aiming/checkout-with-reference-action@v1
   with:
     github_token: ${{ github.token }}
     github_actor: ${{ github.actor }}
@@ -70,7 +70,7 @@ https://swet.dena.com/entry/2021/07/12/120000 を参照してください。
 ブランチ名指定でcheckoutします
 
 ```yaml
-- uses: jksy/checkout-with-reference@v1
+- uses: aiming/checkout-with-reference-action@v1
   with:
     branch_name: 'main'
     reference_dir: '/mnt/shared_dir_like_as_nfs/repository.git'
