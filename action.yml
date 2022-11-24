@@ -38,6 +38,9 @@ runs:
       run: |
         set -xe
 
+        /usr/bin/git config --global user.name "${GITHUB_ACTOR}"
+        /usr/bin/git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+
         export __SHA=${{ inputs.sha || github.sha }}
         if [ ! -z "${{ inputs.branch_name }}" ]; then
           # Override sha value if branch_name is presented.
