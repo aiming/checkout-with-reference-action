@@ -1,0 +1,25 @@
+name: Test checkout
+
+on:
+  push:
+
+permissions:
+  contents: read
+
+
+jobs:
+  update_release_draft:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Test default checkout
+        uses: ./
+        with:
+          checkout_dir: step1
+
+      - name: Test checkout with branch_name as main
+        uses: ./
+        with:
+          branch_name: main
+          checkout_dir: step2
