@@ -23,3 +23,9 @@ jobs:
         with:
           branch_name: main
           checkout_dir: step2
+
+      - name: Test checkout with branch_name as refs/heads/main
+        uses: ./
+        with:
+          branch_name: refs/heads/main
+          checkout_dir: step3
