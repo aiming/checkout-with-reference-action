@@ -1,4 +1,6 @@
 # GitHub Action checkout with reference parameter
+![Test result](https://github.com/aiming/checkout-with-reference-action/actions/workflows/test.yml/badge.svg?branch=main)
+
 GitHub Actions上でソースコードをcloneします。referenceを指定できるようにしています。
 
 NFS等でリファレンス用のリポジトリを用意しておくと、ネットワーク転送量の低減や時間の短縮を期待できます。
