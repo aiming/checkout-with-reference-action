@@ -60,6 +60,7 @@ runs:
         /usr/bin/git clone \
           --depth=1 \
           --reference-if-able=${{ inputs.reference_dir }} \
+          --no-single-branch \
           https://${{ inputs.github_actor }}:${{ inputs.github_token }}@github.com/${{ inputs.github_repository }}.git \
           ${{ inputs.checkout_dir }}
 
