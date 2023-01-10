@@ -29,3 +29,9 @@ jobs:
         with:
           branch_name: refs/heads/main
           checkout_dir: step3
+
+      - name: Test checkout and no depth option
+        uses: ./
+        with:
+          depth: ''
+          checkout_dir: step4
