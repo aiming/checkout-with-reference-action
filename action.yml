@@ -28,8 +28,11 @@ inputs:
   checkout_dir:
     description: 'expoterd NFS directory with host ip address. ex:10.0.0.1:/exports'
     required: true
+  depth:
+    description: 'git clone --depth={} option'
+    default: 1
   ignore_dubious_ownership:
-    description: 'Ignore "detected dubious ownership in repository"'
+    description: 'Not used(deprecated)'
     default: true
 runs:
   using: "composite"
@@ -57,18 +60,26 @@ runs:
           export GIT_LFS_SKIP_SMUDGE=1
         fi
 
+        DEPTH=''
+        if [ ! -z "${{ inputs.depth }}" ]; then
+          DEPTH=--depth=${{ inputs.depth }}
+        fi
+
         /usr/bin/git clone \
-          --depth=1 \
+          $DEPTH \
           --reference-if-able=${{ inputs.reference_dir }} \
           https://${{ inputs.github_actor }}:${{ inputs.github_token }}@github.com/${{ inputs.github_repository }}.git \
           ${{ inputs.checkout_dir }}
 
+        /usr/bin/git config --global --add safe.directory $(pwd)
+
         pushd ${{ inputs.checkout_dir }}
-          if ${{ inputs.ignore_dubious_ownership }}; then
-            /usr/bin/git config --global --add safe.directory $(pwd)
+          if [ ! -z "$__BRANCH" ]; then
+            /usr/bin/git checkout -B $__BRANCH origin/$__BRANCH
+          else
+            /usr/bin/git fetch $DEPTH origin $__SHA
+            /usr/bin/git reset --hard FETCH_HEAD
           fi
-          /usr/bin/git fetch --depth=1 origin $__SHA
-          /usr/bin/git reset --hard FETCH_HEAD
         popd
 
         unset GIT_LFS_SKIP_SMUDGE
