@@ -30,7 +30,7 @@ inputs:
     required: true
   depth:
     description: 'git clone --depth={} option'
-    default: 1
+    default: ''
   ignore_dubious_ownership:
     description: 'Not used(deprecated)'
     default: true
