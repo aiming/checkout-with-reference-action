@@ -8,7 +8,7 @@ permissions:
 
 
 jobs:
-  update_release_draft:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -18,11 +18,25 @@ jobs:
         with:
           checkout_dir: step1
 
+      - name: Directory exists
+        run: |
+          if [ ! -d ./step1 ]; then
+            echo '::error:: Should be able to be checked out'
+            exit 1
+          fi
+
       - name: Test checkout with branch_name as main
         uses: ./
         with:
           branch_name: main
           checkout_dir: step2
+
+      - name: Directory exists
+        run: |
+          if [ ! -d ./step2 ]; then
+            echo '::error:: Should be able to be checked out'
+            exit 1
+          fi
 
       - name: Test checkout with branch_name as refs/heads/main
         uses: ./
@@ -30,8 +44,37 @@ jobs:
           branch_name: refs/heads/main
           checkout_dir: step3
 
+      - name: Directory exists
+        run: |
+          if [ ! -d ./step3 ]; then
+            echo '::error:: Should be able to be checked out'
+            exit 1
+          fi
+
       - name: Test checkout and no depth option
         uses: ./
         with:
           depth: ''
           checkout_dir: step4
+
+      - name: Directory exists
+        run: |
+          if [ ! -d ./step4 ]; then
+            echo '::error:: Should be able to be checked out'
+            exit 1
+          fi
+
+      - name: Test dont checkout when env.ACT is presented.
+        uses: ./
+        env:
+          ACT: 1
+        with:
+          depth: ''
+          checkout_dir: step5
+
+      - name: Directory does not exist
+        run: |
+          if [ -d ./step5 ]; then
+            echo '::error:: Should not be able to be checked out, when ACT environment is exists'
+            exit 1
+          fi
