@@ -78,3 +78,25 @@ jobs:
             echo '::error:: Should not be able to be checked out, when ACT environment is exists'
             exit 1
           fi
+
+      - name: Test Write author to .git/config
+        uses: ./
+        with:
+          depth: ''
+          checkout_dir: step6
+
+      - name: Have user.name and user.email on .git/config?
+        run: |
+          set -xe
+          pwd
+          ls -al
+          pushd step6
+            if [ "${GITHUB_ACTOR}" != "$(git config --local --get user.name)" ]; then
+              echo '::error:: "git config --local --get user.name" Should be equal' "$GITHUB_ACTOR"
+              exit 1
+            fi
+            if [ "${GITHUB_ACTOR}@users.noreply.github.com" != "$(git config --local --get user.email)" ]; then
+              echo '::error:: "git config --local --get user.email" Should be equal' "$GITHUB_ACTOR@users.noreply.github.com"
+              exit 1
+            fi
+          popd
