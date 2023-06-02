@@ -42,11 +42,6 @@ runs:
       run: |
         set -xe
 
-        /usr/bin/git config --global gc.auto 0
-
-        /usr/bin/git config --global user.name "${GITHUB_ACTOR}"
-        /usr/bin/git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-
         export __SHA=${{ inputs.sha || github.sha }}
         if [ ! -z "${{ inputs.branch_name }}" ]; then
           # Remove "refs/heads/" at head if exists it
@@ -81,6 +76,11 @@ runs:
             /usr/bin/git fetch $DEPTH origin $__SHA
             /usr/bin/git reset --hard FETCH_HEAD
           fi
+
+          /usr/bin/git config --local gc.auto 0
+
+          /usr/bin/git config --local user.name "${GITHUB_ACTOR}"
+          /usr/bin/git config --local user.email "${GITHUB_ACTOR}@users.noreply.github.com"
         popd
 
         unset GIT_LFS_SKIP_SMUDGE
