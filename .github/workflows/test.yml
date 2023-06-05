@@ -13,6 +13,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Check .gitconfig
+        run: |
+          if [ -f ~/.gitconfig ]; then
+            cat ~/.gitconfig
+          fi
+
       - name: Test default checkout
         uses: ./
         with:
@@ -100,3 +106,7 @@ jobs:
               exit 1
             fi
           popd
+
+      - name: Check .gitconfig
+        run: |
+          cat ~/.gitconfig

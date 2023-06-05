@@ -67,7 +67,9 @@ runs:
           https://${{ inputs.github_actor }}:${{ inputs.github_token }}@github.com/${{ inputs.github_repository }}.git \
           ${{ inputs.checkout_dir }}
 
-        /usr/bin/git config --global --add safe.directory $(pwd)
+        if [ $(git  config --global --get-all safe.directory | grep -c "$(pwd)$") -eq 0 ]; then
+          /usr/bin/git config --global --add safe.directory $(pwd)
+        fi
 
         pushd ${{ inputs.checkout_dir }}
           if [ ! -z "$__BRANCH" ]; then
