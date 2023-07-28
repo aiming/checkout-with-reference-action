@@ -40,7 +40,11 @@ runs:
     - shell: bash
       if: ${{ !env.ACT }}
       run: |
-        set -xe
+        set -x
+
+        source ./try.sh
+
+        try_till_success curl -s 'https://github.com' > /dev/null
 
         export __SHA=${{ inputs.sha || github.sha }}
         if [ ! -z "${{ inputs.branch_name }}" ]; then
@@ -49,7 +53,7 @@ runs:
           __BRANCH=${__BRANCH#refs/heads/}
 
           # Override sha value if branch_name is presented.
-          __SHA=$(/usr/bin/git ls-remote https://${{ inputs.github_actor }}:${{ inputs.github_token }}@github.com/${{ inputs.github_repository }}.git | grep -E  "\srefs/heads/${__BRANCH}$" | cut -f 1 )
+          __SHA=$(try_till_success /usr/bin/git ls-remote https://${{ inputs.github_actor }}:${{ inputs.github_token }}@github.com/${{ inputs.github_repository }}.git | grep -E  "\srefs/heads/${__BRANCH}$" | cut -f 1 )
         fi
 
         if ! ${{ inputs.fetch_lfs }}; then
@@ -61,11 +65,12 @@ runs:
           DEPTH=--depth=${{ inputs.depth }}
         fi
 
-        /usr/bin/git clone \
-          $DEPTH \
-          --reference-if-able=${{ inputs.reference_dir }} \
-          https://${{ inputs.github_actor }}:${{ inputs.github_token }}@github.com/${{ inputs.github_repository }}.git \
-          ${{ inputs.checkout_dir }}
+        try_till_success \
+          /usr/bin/git clone \
+            $DEPTH \
+            --reference-if-able=${{ inputs.reference_dir }} \
+            https://${{ inputs.github_actor }}:${{ inputs.github_token }}@github.com/${{ inputs.github_repository }}.git \
+            ${{ inputs.checkout_dir }}
 
         if [ $(git  config --global --get-all safe.directory | grep -c "$(pwd)$") -eq 0 ]; then
           /usr/bin/git config --global --add safe.directory $(pwd)
@@ -75,7 +80,7 @@ runs:
           if [ ! -z "$__BRANCH" ]; then
             /usr/bin/git checkout -B $__BRANCH origin/$__BRANCH
           else
-            /usr/bin/git fetch $DEPTH origin $__SHA
+            try_till_success /usr/bin/git fetch $DEPTH origin $__SHA
             /usr/bin/git reset --hard FETCH_HEAD
           fi
 
