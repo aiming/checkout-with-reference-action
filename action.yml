@@ -42,7 +42,8 @@ runs:
       run: |
         set -x
 
-        source ./try.sh
+        echo $GITHUB_ACTION_PATH
+        source $GITHUB_ACTION_PATH/try.sh
 
         try_till_success curl -s 'https://github.com' > /dev/null
 
