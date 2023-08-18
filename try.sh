@@ -16,8 +16,11 @@ function try_till_success {
 
   while [[ $attempt < $max_attempts ]]
   do
+    oldopt=$-
+    set +e
     "$@"
     exitCode=$?
+    set -$oldopt
 
     if [[ $exitCode == 0 ]]
     then
