@@ -40,8 +40,6 @@ runs:
     - shell: bash
       if: ${{ !env.ACT }}
       run: |
-        set -x
-
         echo $GITHUB_ACTION_PATH
         source $GITHUB_ACTION_PATH/try.sh
 

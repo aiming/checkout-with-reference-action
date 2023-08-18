@@ -110,3 +110,45 @@ jobs:
       - name: Check .gitconfig
         run: |
           cat ~/.gitconfig
+
+      - name: Test do not retry if command successfull
+        run: |
+          source try.sh
+
+          before=$(date +%s)
+          try_till_success ls
+          after=$(date +%s)
+
+          # コマンド呼び出しに時間がかかっているかでリトライ判定をしています
+          if [ $(($after - $before)) -gt 1 ]; then
+            echo "::error:: 成功時にもリトライしています after = ${after}, before = ${before}"
+            exit 1
+          fi
+
+      - name: Test do retry if command failure
+        shell: bash +e -x {0}
+        run: |
+          source try.sh
+
+          before=$(date +%s)
+          try_till_success false
+          after=$(date +%s)
+
+          # コマンド呼び出しに時間がかかっているかでリトライ判定をしています
+          if [ $(expr $after - $before) -lt 2 ]; then
+            echo "::error:: 失敗時にリトライしていません after = ${after}, before = ${before}"
+            exit 1
+          fi
+
+      - name: Setup github.com connection
+        continue-on-error: true
+        run: |
+          # disable connect to github.com
+          echo '127.0.0.1 github.com' | sudo tee -a /etc/hosts
+
+      - name: Test retry checkout
+        continue-on-error: true
+        uses: ./
+        with:
+          depth: ''
+          checkout_dir: step7
