@@ -120,7 +120,7 @@ jobs:
           after=$(date +%s)
 
           # コマンド呼び出しに時間がかかっているかでリトライ判定をしています
-          if [ $(expr $after - $before) -gt 1 ]; then
+          if [ $(($after - $before)) -gt 1 ]; then
             echo "::error:: 成功時にもリトライしています after = ${after}, before = ${before}"
             exit 1
           fi
