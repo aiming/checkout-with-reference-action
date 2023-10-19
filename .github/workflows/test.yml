@@ -22,11 +22,11 @@ jobs:
       - name: Test default checkout
         uses: ./
         with:
-          checkout_dir: step1
+          checkout_dir: step.default
 
       - name: Directory exists
         run: |
-          if [ ! -d ./step1 ]; then
+          if [ ! -d ./step.default ]; then
             echo '::error:: Should be able to be checked out'
             exit 1
           fi
@@ -35,11 +35,11 @@ jobs:
         uses: ./
         with:
           branch_name: main
-          checkout_dir: step2
+          checkout_dir: step.branch_name
 
       - name: Directory exists
         run: |
-          if [ ! -d ./step2 ]; then
+          if [ ! -d ./step.branch_name ]; then
             echo '::error:: Should be able to be checked out'
             exit 1
           fi
@@ -48,11 +48,11 @@ jobs:
         uses: ./
         with:
           branch_name: refs/heads/main
-          checkout_dir: step3
+          checkout_dir: step.long_branch_name
 
       - name: Directory exists
         run: |
-          if [ ! -d ./step3 ]; then
+          if [ ! -d ./step.long_branch_name ]; then
             echo '::error:: Should be able to be checked out'
             exit 1
           fi
@@ -61,11 +61,11 @@ jobs:
         uses: ./
         with:
           depth: ''
-          checkout_dir: step4
+          checkout_dir: step.no_depth_option
 
       - name: Directory exists
         run: |
-          if [ ! -d ./step4 ]; then
+          if [ ! -d ./step.no_depth_option ]; then
             echo '::error:: Should be able to be checked out'
             exit 1
           fi
@@ -76,11 +76,11 @@ jobs:
           ACT: 1
         with:
           depth: ''
-          checkout_dir: step5
+          checkout_dir: step.act_presented
 
       - name: Directory does not exist
         run: |
-          if [ -d ./step5 ]; then
+          if [ -d ./step.act_presented ]; then
             echo '::error:: Should not be able to be checked out, when ACT environment is exists'
             exit 1
           fi
@@ -89,14 +89,14 @@ jobs:
         uses: ./
         with:
           depth: ''
-          checkout_dir: step6
+          checkout_dir: step.authoer
 
       - name: Have user.name and user.email on .git/config?
         run: |
           set -xe
           pwd
           ls -al
-          pushd step6
+          pushd step.authoer
             if [ "${GITHUB_ACTOR}" != "$(git config --local --get user.name)" ]; then
               echo '::error:: "git config --local --get user.name" Should be equal' "$GITHUB_ACTOR"
               exit 1
