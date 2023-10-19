@@ -46,7 +46,8 @@ runs:
         try_till_success curl -s 'https://github.com' > /dev/null
 
         export __SHA=${{ inputs.sha || github.sha }}
-        if [ ! -z "${{ inputs.branch_name }}" ]; then
+        BRANCH=${{ inputs.branch_name }}
+        if [ -n "$BRANCH" ]; then
           # Remove "refs/heads/" at head if exists it
           __BRANCH=${{ inputs.branch_name }}
           __BRANCH=${__BRANCH#refs/heads/}
@@ -59,8 +60,8 @@ runs:
           export GIT_LFS_SKIP_SMUDGE=1
         fi
 
-        DEPTH=''
-        if [ ! -z "${{ inputs.depth }}" ]; then
+        DEPTH=${{ inputs.depth }}
+        if [ -n "$DEPTH" ]; then
           DEPTH=--depth=${{ inputs.depth }}
         fi
 
