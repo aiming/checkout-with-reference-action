@@ -24,7 +24,7 @@ https://swet.dena.com/entry/2021/07/12/120000 を参照してください。
     # Default: ${{ github.actor }}
     github_actor: ''
 
-    # cloneするブランチ名を指定します。通常は指定なしです
+    # cloneするブランチ名を指定します。通常は指定なしです（※origin/develop ではなく develop を渡してください）
     branch_name: ''
 
     # cloneするcommit shaを指定します。
