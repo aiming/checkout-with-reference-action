@@ -57,6 +57,20 @@ jobs:
             exit 1
           fi
 
+      - name: Test checkout with branch_name as origin/main
+        continue-on-error: true
+        uses: ./
+        with:
+          branch_name: origin/main
+          checkout_dir: step.branch_name_include_origin
+
+      - name: Directory does not exists
+        run: |
+          if [ -d ./step.branch_name_include_origin ]; then
+            echo '::error:: Should fail checking out'
+            exit 1
+          fi
+
       - name: Test checkout and no depth option
         uses: ./
         with:
