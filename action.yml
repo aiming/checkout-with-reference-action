@@ -71,7 +71,7 @@ runs:
             https://${{ inputs.github_actor }}:${{ inputs.github_token }}@github.com/${{ inputs.github_repository }}.git \
             ${{ inputs.checkout_dir }}
 
-        if [ $(git  config --global --get-all safe.directory | grep -c "$(pwd)$") -eq 0 ]; then
+        if [ $(git config --global --get-all safe.directory | grep -c "$(pwd)$") -eq 0 ]; then
           /usr/bin/git config --global --add safe.directory $(pwd)
         fi
 
@@ -87,6 +87,8 @@ runs:
 
           /usr/bin/git config --local user.name "${GITHUB_ACTOR}"
           /usr/bin/git config --local user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          # workaround `git lfs pull` is failure
+          /usr/bin/git config lfs.url https://${{ inputs.github_actor }}:${{ inputs.github_token }}@github.com/${{ inputs.github_repository }}.git/info/lfs
         popd
 
         unset GIT_LFS_SKIP_SMUDGE
