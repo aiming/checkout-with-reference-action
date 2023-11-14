@@ -26,7 +26,7 @@ inputs:
     description: 'Clone with fetching LFS .'
     default: false
   checkout_dir:
-    description: 'expoterd NFS directory with host ip address. ex:10.0.0.1:/exports'
+    description: 'Name of directory to check out'
     required: true
   depth:
     description: 'git clone --depth={} option'
