@@ -69,10 +69,14 @@ runs:
           DEPTH=--depth=${{ inputs.depth }}
         fi
 
+        if [ ! -z "${{ inputs.reference_dir }}" ]; then
+          REFERENCE_IF_ABLE="--reference-if-able=${{ inputs.reference_dir }}"
+        fi
+
         try_till_success \
           /usr/bin/git clone \
             $DEPTH \
-            --reference-if-able=${{ inputs.reference_dir }} \
+            $REFERENCE_IF_ABLE \
             https://${{ inputs.github_actor }}:${{ inputs.github_token }}@github.com/${{ inputs.github_repository }}.git \
             ${{ inputs.checkout_dir }}
 
