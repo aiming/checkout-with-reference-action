@@ -40,6 +40,11 @@ runs:
     - shell: bash
       if: ${{ !env.ACT }}
       run: |
+        if [ -n "$RUNNER_DEBUG" ] || [ -n "$ACTIONS_STEP_DEBUG" ]; then
+          echo "Enable debug logging"
+          set -x
+        fi
+
         echo $GITHUB_ACTION_PATH
         source $GITHUB_ACTION_PATH/try.sh
 
