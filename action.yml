@@ -26,7 +26,7 @@ inputs:
     description: 'Clone with fetching LFS .'
     default: false
   checkout_dir:
-    description: 'expoterd NFS directory with host ip address. ex:10.0.0.1:/exports'
+    description: 'Name of directory to check out'
     required: true
   depth:
     description: 'git clone --depth={} option'
@@ -40,6 +40,11 @@ runs:
     - shell: bash
       if: ${{ !env.ACT }}
       run: |
+        if [ -n "$RUNNER_DEBUG" ] || [ -n "$ACTIONS_STEP_DEBUG" ]; then
+          echo "Enable debug logging"
+          set -x
+        fi
+
         echo $GITHUB_ACTION_PATH
         source $GITHUB_ACTION_PATH/try.sh
 
@@ -64,15 +69,21 @@ runs:
           DEPTH=--depth=${{ inputs.depth }}
         fi
 
+        if [ ! -z "${{ inputs.reference_dir }}" ]; then
+          REFERENCE_IF_ABLE="--reference-if-able=${{ inputs.reference_dir }}"
+        fi
+
         try_till_success \
           /usr/bin/git clone \
             $DEPTH \
-            --reference-if-able=${{ inputs.reference_dir }} \
+            $REFERENCE_IF_ABLE \
             https://${{ inputs.github_actor }}:${{ inputs.github_token }}@github.com/${{ inputs.github_repository }}.git \
             ${{ inputs.checkout_dir }}
 
-        if [ $(git config --global --get-all safe.directory | grep -c "$(pwd)$") -eq 0 ]; then
-          /usr/bin/git config --global --add safe.directory $(pwd)
+        CHECKOUT_FULL_PATH="$(pwd)${{ inputs.checkout_dir }})"
+        CHECKOUT_FULL_PATH="$(realpath $CHECKOUT_FULL_PATH)"
+        if [ $(git config --global --get-all safe.directory | grep -c "${CHECKOUT_FULL_PATH}$") -eq 0 ]; then
+          /usr/bin/git config --global --add safe.directory "${CHECKOUT_FULL_PATH}"
         fi
 
         pushd ${{ inputs.checkout_dir }}
