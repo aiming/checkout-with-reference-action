@@ -103,14 +103,14 @@ jobs:
         uses: ./
         with:
           depth: ''
-          checkout_dir: step.authoer
+          checkout_dir: step.author
 
       - name: Have user.name and user.email on .git/config?
         run: |
           set -xe
           pwd
           ls -al
-          pushd step.authoer
+          pushd step.author
             if [ "${GITHUB_ACTOR}" != "$(git config --local --get user.name)" ]; then
               echo '::error:: "git config --local --get user.name" Should be equal' "$GITHUB_ACTOR"
               exit 1
@@ -151,6 +151,32 @@ jobs:
           # コマンド呼び出しに時間がかかっているかでリトライ判定をしています
           if [ $(expr $after - $before) -lt 2 ]; then
             echo "::error:: 失敗時にリトライしていません after = ${after}, before = ${before}"
+            exit 1
+          fi
+
+      - name: Test Write checkout dir to safe.dirctory on .gitconfig
+        uses: ./
+        with:
+          depth: ''
+          checkout_dir: step.checkout-dir
+
+      - name: Have a current directory in safe.directory on .gitconfig
+        run: |
+          set -xe
+          pwd
+          SAFE_DIRECTORIES=$(git config --get-all safe.directory)
+          EXPECT="$(pwd)/step.checkout-dir"
+
+          FOUND=false
+          for s in $SAFE_DIRECTORIES; do
+            if [ "$s" = "$EXPECT" ]; then
+              FOUND=true
+            fi
+          done
+
+          if [ "$FOUND" = 'false' ]; then
+            echo "::error:: safe.directory内に $EXPECT が見つかりません"
+            echo "$SAFE_DIRECTORIES"
             exit 1
           fi
 
