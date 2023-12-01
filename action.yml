@@ -80,7 +80,7 @@ runs:
             https://${{ inputs.github_actor }}:${{ inputs.github_token }}@github.com/${{ inputs.github_repository }}.git \
             ${{ inputs.checkout_dir }}
 
-        CHECKOUT_FULL_PATH="$(pwd)${{ inputs.checkout_dir }})"
+        CHECKOUT_FULL_PATH="$(pwd)/${{ inputs.checkout_dir }}"
         CHECKOUT_FULL_PATH="$(realpath $CHECKOUT_FULL_PATH)"
         if [ $(git config --global --get-all safe.directory | grep -c "${CHECKOUT_FULL_PATH}$") -eq 0 ]; then
           /usr/bin/git config --global --add safe.directory "${CHECKOUT_FULL_PATH}"
