@@ -180,6 +180,26 @@ jobs:
             exit 1
           fi
 
+      - name: Test invalid github_actor value
+        uses: ./
+        with:
+          github_actor: 'github-actions%5Bbot%5D'
+          depth: ''
+          checkout_dir: step.actor_includes_invalid_character
+
+      - name: Have Endpoint= line on `git lfs env` outputs
+        run: |
+          pushd step.actor_includes_invalid_character
+            if [ $(git lfs env | grep 'Endpoint=' | grep 'info/lfs' | wc -l) == '1' ]; then
+              # Found a line
+              #   Endpoint=github.com/org/repo.git/info/lfs
+              exit 0
+            else
+              echo "::error:: git lfs envの値に `Endpoint=...info/lfs` の行が見つかりません"
+              exit 1
+            fi
+          popd
+
       - name: Setup github.com connection
         continue-on-error: true
         run: |
